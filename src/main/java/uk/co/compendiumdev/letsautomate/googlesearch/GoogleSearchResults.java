@@ -15,9 +15,13 @@ import java.util.List;
 public class GoogleSearchResults {
     private final WebDriver driver;
     private final WebDriverWait wait;
+    private final String searchUrl;
+    private int pageNumber;
 
-    public GoogleSearchResults(WebDriver driver) {
+    public GoogleSearchResults(WebDriver driver, int pageNumber, String theSearchURL) {
         this.driver = driver;
+        this.pageNumber = pageNumber;
+        this.searchUrl = theSearchURL;
 
         wait = new WebDriverWait(driver, 5);
     }
@@ -47,8 +51,8 @@ public class GoogleSearchResults {
         try{
 
             String flyrCssSelector = "div#flyr";
-            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(flyrCssSelector)));
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(flyrCssSelector)));
+            //wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(flyrCssSelector)));
+            //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(flyrCssSelector)));
 
         }catch(Exception e){
             // ignore any exceptions
@@ -56,6 +60,19 @@ public class GoogleSearchResults {
     }
 
     public boolean getMoreResults() {
+
+        String pageUrl = searchUrl;
+
+        pageNumber++;
+        pageUrl = pageUrl + "&start=" + ((pageNumber-1)*10);
+
+        driver.get(pageUrl);
+
+        waitUntilAvailable();
+
+        return (returnUrls().size()>0);
+
+        /*
 
         String cssOfNextPageButton = "a#pnnext";
 
@@ -70,5 +87,7 @@ public class GoogleSearchResults {
         }
 
         return haveMoreResults;
+
+        */
     }
 }
