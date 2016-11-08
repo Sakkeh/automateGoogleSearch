@@ -18,7 +18,7 @@ public class GoogleSearch {
         this.driver = new ChromeDriver();;
         this.domain = siteDomain;
 
-        driver.get("https://google.com");
+        driver.get(siteDomain);
     }
 
     public void searchFor(String searchTerm, String matchInUrl) {
