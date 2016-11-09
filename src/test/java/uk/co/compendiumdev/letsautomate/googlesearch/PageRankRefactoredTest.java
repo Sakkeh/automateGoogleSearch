@@ -16,7 +16,8 @@ public class PageRankRefactoredTest {
         //PageRankResult result = new GooglePageRankChecker("https://google.co.uk").checkRank("prolog programmer", "compendiumdev.co.uk");
 
 
-        GoogleSearch google = new GoogleSearch("https://google.co.uk");
+        //GoogleSearchI google = new GoogleSearchViaURL("https://google.co.uk");
+        GoogleSearchI google = new GoogleSearchViaClickAndType("https://google.co.uk");
 
         String searchTerm=  "dear evil tester"; //"selenium training"; // "prolog programmer";;     "dear evil tester"; //
         String matchInUrl="compendiumdev.co.uk";    // page 2 on google.co.uk but not on google.com

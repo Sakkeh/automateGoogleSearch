@@ -6,42 +6,32 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Alan on 08/11/2016.
  */
-public class GoogleSearchResults {
+public class GoogleSearchResultsViaClickAndType implements GoogleSearchResultsI {
     private final WebDriver driver;
     private final WebDriverWait wait;
-    private final String searchUrl;
-    private int pageNumber;
 
-    public GoogleSearchResults(WebDriver driver, int pageNumber, String theSearchURL) {
+
+    public GoogleSearchResultsViaClickAndType(WebDriver driver) {
         this.driver = driver;
-        this.pageNumber = pageNumber;
-        this.searchUrl = theSearchURL;
+
 
         wait = new WebDriverWait(driver, 5);
     }
 
+    @Override
     public List<TitledUrl> returnUrls() {
-        List<WebElement> resultEntries = driver.findElements(By.cssSelector("h3.r > a"));
-        List<TitledUrl> resultUrls = new ArrayList<>();
 
-        for(WebElement element : resultEntries){
-            String href = element.getAttribute("href");
-            String title = element.getText();
+        return WebDriverGoogleSearchResultsExtractor.getReturnUrls(driver);
 
-            TitledUrl titledUrl = new TitledUrl(href, title);
-            resultUrls.add(titledUrl);
 
-        }
-
-        return resultUrls;
     }
 
+    @Override
     public void waitUntilAvailable() {
         String cssOfFooter = "div#navcnt";
 
@@ -51,28 +41,17 @@ public class GoogleSearchResults {
         try{
 
             String flyrCssSelector = "div#flyr";
-            //wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(flyrCssSelector)));
-            //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(flyrCssSelector)));
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(flyrCssSelector)));
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(flyrCssSelector)));
 
         }catch(Exception e){
             // ignore any exceptions
         }
     }
 
+    @Override
     public boolean getMoreResults() {
 
-        String pageUrl = searchUrl;
-
-        pageNumber++;
-        pageUrl = pageUrl + "&start=" + ((pageNumber-1)*10);
-
-        driver.get(pageUrl);
-
-        waitUntilAvailable();
-
-        return (returnUrls().size()>0);
-
-        /*
 
         String cssOfNextPageButton = "a#pnnext";
 
@@ -88,6 +67,5 @@ public class GoogleSearchResults {
 
         return haveMoreResults;
 
-        */
     }
 }

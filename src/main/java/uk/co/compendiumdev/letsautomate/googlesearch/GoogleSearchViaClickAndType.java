@@ -1,44 +1,31 @@
 package uk.co.compendiumdev.letsautomate.googlesearch;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Created by Alan on 08/11/2016.
  */
-public class GoogleSearch {
+public class GoogleSearchViaClickAndType implements GoogleSearchI {
     private final String domain;
     private final WebDriver driver;
     private String theSearchURL;
-    private GoogleSearchResults googleSearchResults;
+    private GoogleSearchResultsI googleSearchResults;
 
-    public GoogleSearch(String siteDomain) {
+    public GoogleSearchViaClickAndType(String siteDomain) {
         this.driver = new ChromeDriver();;
         this.domain = siteDomain;
 
-        //driver.get(siteDomain);
+        driver.get(siteDomain);
     }
 
+    @Override
     public void searchFor(String searchTerm, String matchInUrl) {
 
-        String searchForString = "";
-
-        try {
-            searchForString = URLEncoder.encode(searchTerm, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        this.theSearchURL = this.domain + "/search?q=" + searchForString;
-
-        driver.get(this.theSearchURL);
-
-        return;
-
-/*
         WebDriverWait wait = new WebDriverWait(driver, 5);
 
         String cssOfInputField = "input[name='q']";
@@ -52,16 +39,17 @@ public class GoogleSearch {
 
         WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssOfSearchButton)));
         searchButton.click();
-*/
     }
 
-    public GoogleSearchResults results() {
+    @Override
+    public GoogleSearchResultsI results() {
         if(googleSearchResults==null){
-            googleSearchResults = new GoogleSearchResults(driver, 1, theSearchURL);
+            googleSearchResults = new GoogleSearchResultsViaClickAndType(driver);
         }
         return googleSearchResults;
     }
 
+    @Override
     public void endSearch() {
         driver.close();
         driver.quit();
